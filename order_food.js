@@ -39,10 +39,11 @@ for (var i = 1; i <= 5; i++) {
 
   // Use closure to preserve local value for current_day
   (function(current_day) {
-
     // Go to the day view of current_day
     casper.waitForSelector('.menu-days-container .day', function() {
+      this.echo('------------ Processing day ' + current_day + ' ------------');
       casper.thenEvaluate(function(current_day) {
+
         $('.menu-days-container .day:nth-child(' + current_day + ') .day-element:first').click();
       }, {current_day: current_day});
     });
@@ -59,19 +60,21 @@ for (var i = 1; i <= 5; i++) {
           if (paleoProductsWithoutSprouts.length > 0) {
             // click ADD
             paleoProductsWithoutSprouts.find('[ng-mouseover]:contains(ADD):first').click();
-            setTimeout(function() {
-              // Hit Checkout!
-              console.log('Making order!');
-              $('.hitAdd_showCart #checkout-btn').click()
-            }, 500)
-          } else {
-            console.log('No edible food, relying on meat backup for this day.');
           }
         });
-
-        casper.waitForSelector('.menu-days-container .day.selected:nth-child(' + current_day + ')  > .day-box > .day-element .ordered-checkmark:not(.ng-hide)', function() {
-          console.log('Order made successfully for day ' + current_day + '!');
+        casper.waitForSelector('.hitAdd_showCart #checkout-btn', function() {
+          casper.evaluate(function(){
+            // Hit Checkout!
+            console.log('Making order!');
+            $('.hitAdd_showCart #checkout-btn').click()
+          });
+          casper.waitForSelector('.menu-days-container .day.selected:nth-child(' + current_day + ')  > .day-box > .day-element .ordered-checkmark:not(.ng-hide)', function() {
+            this.echo('Order made successfully for day ' + current_day + '!');
+          });
+        }, function() {
+          this.echo('No edible food, relying on meat backup for this day.');
         });
+
       });
     }, function () {
       this.echo('No order need to be done for day ' + current_day + '.');
