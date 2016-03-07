@@ -1,6 +1,4 @@
-var casper = require('casper').create();
 var envVars = require('system').env;
-
 var casper = require('casper').create({
 //    verbose: true,
 //    logLevel: 'debug',
