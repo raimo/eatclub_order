@@ -1,0 +1,3 @@
+# Copy this to $HOME/.eatclubrc and specify your eatclub credentials
+export EATCLUB_EMAIL='my-email@example.com'
+export EATCLUB_PASSWORD='my-password'
