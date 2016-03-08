@@ -1,2 +1,2 @@
 # Set this up in crontab, using e.g. `crontab -e`
-45 11 */3 * * source .eatclubrc && /usr/local/bin/casperjs --ssl-protocol=any --ignore-ssl-errors=true --web-security=no eatclub_order/order_food.js
+45 11 * * * /usr/local/bin/casperjs --ssl-protocol=any --ignore-ssl-errors=true --web-security=no eatclub_order/order_food.js
