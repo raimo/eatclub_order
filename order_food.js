@@ -1,4 +1,3 @@
-var envVars = require('system').env;
 var casper = require('casper').create({
 //    verbose: true,
 //    logLevel: 'debug',
@@ -9,6 +8,10 @@ var casper = require('casper').create({
          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4'
     }
 });
+var fs = require('fs');
+var options = JSON.parse(fs.read('.eatclubrc'));
+
+console.log(options);
 
 casper.on('complete.error', function(msg,backtrace) {
    this.echo('some error: ' + msg);
@@ -28,8 +31,8 @@ var url = 'https://www.eatclub.com';
 casper.start(url + '/login/', function() {
    //this.echo(casper.getHTML('body'));
    this.fill('form', {
-        email: envVars.EATCLUB_EMAIL,
-        password: envVars.EATCLUB_PASSWORD
+        email: options.eatclub_email,
+        password: options.eatclub_password
     }, true);
 });
 
@@ -52,14 +55,25 @@ for (var i = 1; i <= 5; i++) {
       casper.waitForSelector('.mi-dish-tag', function() {
 
         // evaluate jQuery in the page
-        casper.evaluate(function(){
-          paleoProductsWithoutSprouts = $('[ec-menu-item][class=ng-scope]:contains(Paleo):not(:contains(sprouts))')
-          console.log('Edible food count: ' + paleoProductsWithoutSprouts.length);
-          if (paleoProductsWithoutSprouts.length > 0) {
-            // click ADD
-            paleoProductsWithoutSprouts.find('[ng-mouseover]:contains(ADD):first').click();
+        casper.thenEvaluate(function(preferenceOptions){
+          for (var i = 0; i < preferenceOptions.length; i++) {
+            var expression = '[ec-menu-item][class=ng-scope]';
+            if (preferenceOptions[i].include) {
+              expression += ':contains(' + preferenceOptions[i].include + ')';
+            }
+            if (preferenceOptions[i].exclude) {
+              expression += ':not(:contains(' + preferenceOptions[i].exclude + '))';
+            }
+            var candidates = $(expression);
+            console.log('Food including "' + preferenceOptions[i].include + '" excluding "' + preferenceOptions[i].exclude + '" count: ' + candidates.length);
+            if (candidates.length > 0) {
+              var $selection = $('[ng-mouseover]:contains(ADD)', candidates.get(0));
+              console.log('Picking ' + $selection.attr('item-name'));
+              $selection.click();
+              break;
+            }
           }
-        });
+        }, {preferenceOptions: options.preferences});
         casper.waitForSelector('.hitAdd_showCart #checkout-btn', function() {
           casper.evaluate(function(){
             // Hit Checkout!
@@ -76,13 +90,6 @@ for (var i = 1; i <= 5; i++) {
       });
     }, function () {
       this.echo('No order need to be done for day ' + current_day + '.');
-      casper.evaluate(function(){
-        var allPaleo = $('[ec-menu-item][class=ng-scope]:contains(Paleo)')
-        if (allPaleo.length > 0) {
-          var paleoWithSprouts = $.map(allPaleo, function(e) { return $('.mi-item-name-link', e).text() }).join(', ');
-          console.log('We skipped these Paleo dishes because they had Brussel Sprouts: ' + paleoWithSprouts);
-        }
-      });
     });
   })(i);
 }

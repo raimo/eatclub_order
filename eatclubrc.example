@@ -1,3 +1,14 @@
-# Copy this to $HOME/.eatclubrc and specify your eatclub credentials
-export EATCLUB_EMAIL='my-email@example.com'
-export EATCLUB_PASSWORD='my-password'
+{
+  "_instructions" : "Copy this JSON file to name "$HOME/.eatclubrc", specify your eatclub credentials and preferred food filters",
+  "eatclub_email": "my-email@example.com",
+  "eatclub_password": "my-password",
+  "preferences": [
+    {
+      "include": "Paleo",
+      "exclude": "routs"
+    },
+    {
+      "include": "butter chicken"
+    }
+  ]
+}
