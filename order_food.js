@@ -11,7 +11,7 @@ var casper = require('casper').create({
 var fs = require('fs');
 var options = JSON.parse(fs.read('.eatclubrc'));
 
-console.log(options);
+console.log("Using food preferences: " + JSON.stringify(options.preferences));
 
 casper.on('complete.error', function(msg,backtrace) {
    this.echo('some error: ' + msg);
