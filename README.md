@@ -1,4 +1,4 @@
-# eatclub_order - Order food automatically from EatClub
+# Order food automatically from EatClub
 
 ## Installation
 
