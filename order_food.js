@@ -80,7 +80,7 @@ for (var i = 1; i <= 5; i++) {
             console.log('Making order!');
             $('.hitAdd_showCart #checkout-btn').click()
           });
-          casper.waitForSelector('.menu-days-container .day.selected:nth-child(' + current_day + ')  > .day-box > .day-element .ordered-checkmark:not(.ng-hide)', function() {
+          casper.waitForSelector('.menu-days-container .day:nth-child(' + current_day + ')  > .day-box > .day-element .ordered-checkmark:not(.ng-hide)', function() {
             this.echo('Order made successfully for day ' + current_day + '!');
           });
         }, function() {
