@@ -57,13 +57,18 @@ for (var i = 1; i <= 5; i++) {
         // evaluate jQuery in the page
         casper.thenEvaluate(function(preferenceOptions){
           for (var i = 0; i < preferenceOptions.length; i++) {
-            var expression = '[ec-menu-item][class=ng-scope]';
+            var expression = '[ec-menu-item][class=ng-scope]:not(:has(.ribbon.soldout))';
             if (preferenceOptions[i].include) {
-              expression += ':contains(' + preferenceOptions[i].include + ')';
+              var filter = preferenceOptions[i].include;
+              if (typeof(filter) === 'string') { filter = [filter] };
+              expression += filter.map(function(e) { return ':contains(' + e + ')'; }).join();
             }
             if (preferenceOptions[i].exclude) {
-              expression += ':not(:contains(' + preferenceOptions[i].exclude + '))';
+              var filter = preferenceOptions[i].exclude;
+              if (typeof(filter) === 'string') { filter = [filter] };
+              expression += filter.map(function(e) { return ':not(:contains(' + e + '))'; }).join();
             }
+            console.log(expression);
             var candidates = $(expression);
             console.log('Food including "' + preferenceOptions[i].include + '" excluding "' + preferenceOptions[i].exclude + '" count: ' + candidates.length);
             if (candidates.length > 0) {
