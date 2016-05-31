@@ -55,7 +55,7 @@ for (var i = 1; i <= 5; i++) {
       casper.waitForSelector('.mi-dish-tag', function() {
 
         // evaluate jQuery in the page
-        casper.thenEvaluate(function(preferenceOptions){
+        casper.thenEvaluate(function(preferenceOptions, current_day){
           for (var i = 0; i < preferenceOptions.length; i++) {
             var expression = '[ec-menu-item][class=ng-scope]:not(:has(.ribbon.soldout))';
             if (preferenceOptions[i].include) {
@@ -76,9 +76,12 @@ for (var i = 1; i <= 5; i++) {
               console.log('Picking ' + $selection.attr('item-name'));
               $selection.click();
               break;
+            } else if (preferenceOptions[i].wait_until_days_left && preferenceOptions[i].wait_until_days_left < current_day) {
+              console.log('Skipping rest of the preferences, since wait_until_days_left=' + preferenceOptions[i].wait_until_days_left + ' for preference index ' + i);
+              break;
             }
           }
-        }, {preferenceOptions: options.preferences});
+        }, {preferenceOptions: options.preferences, current_day: current_day});
         casper.waitForSelector('.hitAdd_showCart #checkout-btn', function() {
           casper.evaluate(function(){
             // Hit Checkout!
