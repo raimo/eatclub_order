@@ -7,3 +7,8 @@
 3. Install crontab as instructed in `crontab.example`
 4. Install credentials and preferences for EatClub as instructed in `eatclubrc.example`
 5. Ready!
+
+## Known Issues
+
+Currently EatClub's site has changed so that the script doesn't seem to work. :(
+
