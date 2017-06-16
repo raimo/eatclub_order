@@ -1,3 +1,7 @@
+### DEPRECATED!!
+
+Go to https://github.com/raimo/eatclub-nightmare for up-to-date nightmare.js version of this tool.
+
 # Order food automatically from EatClub
 
 ## Installation
